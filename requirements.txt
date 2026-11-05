@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic-settings
+pymupdf
+langchain
+langchain-openai
+langchain-huggingface
+sentence-transformers
+langchain-chroma
+langgraph
+chromadb
+streamlit
+requests
+pytest
+python-dotenv
