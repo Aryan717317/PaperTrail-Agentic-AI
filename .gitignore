@@ -6,3 +6,4 @@ data/
 .streamlit/
 *.py[cod]
 .DS_Store
+.torch_cache/
