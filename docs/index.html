@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PaperTrail — AI-Powered Research Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0e17;
+      --bg-secondary: #111827;
+      --bg-card: #162032;
+      --border-color: #24344d;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent-cyan: #38bdf8;
+      --accent-blue: #3b82f6;
+      --accent-indigo: #6366f1;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --gradient-brand: linear-gradient(135deg, #38bdf8 0%, #6366f1 50%, #a855f7 100%);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Glow backdrop */
+    .glow-circle {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, rgba(99, 102, 241, 0.05) 50%, transparent 70%);
+      top: -150px;
+      left: 50%;
+      transform: translateX(-50%);
+      filter: blur(80px);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      background: rgba(10, 14, 23, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      z-index: 100;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .logo-badge {
+      background: var(--gradient-brand);
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.8rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent-cyan);
+    }
+
+    .btn-github {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 0.5rem 1.1rem;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-github:hover {
+      background: var(--border-color);
+      border-color: var(--accent-cyan);
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      position: relative;
+      max-width: 1000px;
+      margin: 4.5rem auto 3rem;
+      padding: 0 1.5rem;
+      text-align: center;
+      z-index: 1;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      border-radius: 9999px;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      color: var(--accent-cyan);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.3rem, 5.5vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+    }
+
+    .gradient-text {
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      max-width: 760px;
+      margin: 0 auto 2.2rem;
+      font-weight: 400;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--gradient-brand);
+      color: #fff;
+      padding: 0.85rem 1.8rem;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1rem;
+      box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 26px rgba(56, 189, 248, 0.45);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.85rem 1.8rem;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background: var(--border-color);
+    }
+
+    /* Badges Bar */
+    .badges-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+      margin: 3.5rem auto 0;
+      max-width: 900px;
+    }
+
+    .badge-pill {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* Section Styles */
+    section {
+      max-width: 1200px;
+      margin: 5rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 3rem;
+    }
+
+    .section-header h2 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+    }
+
+    /* Features Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.8rem;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: inline-block;
+    }
+
+    .feature-card h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+
+    .feature-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+
+    /* Architecture Visualizer */
+    .arch-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 2rem;
+    }
+
+    .pipeline-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+    }
+
+    .step-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.2rem 1.5rem;
+      display: grid;
+      grid-template-columns: 80px 1fr 140px;
+      align-items: center;
+      gap: 1.5rem;
+      transition: border-color 0.2s;
+    }
+
+    .step-box:hover {
+      border-color: var(--accent-blue);
+    }
+
+    .step-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      text-align: center;
+      background: rgba(99, 102, 241, 0.2);
+      color: #818cf8;
+      border: 1px solid rgba(99, 102, 241, 0.4);
+    }
+
+    .step-content h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+      color: #fff;
+    }
+
+    .step-content p {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    .step-tag {
+      font-size: 0.8rem;
+      color: var(--accent-cyan);
+      font-weight: 600;
+      text-align: right;
+    }
+
+    /* Code Snippet */
+    .code-box {
+      background: #0d121c;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      color: #e2e8f0;
+      overflow-x: auto;
+      margin-top: 1.5rem;
+    }
+
+    .code-box .keyword { color: #f43f5e; }
+    .code-box .string { color: #38bdf8; }
+    .code-box .comment { color: #64748b; font-style: italic; }
+
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 3rem 1.5rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: var(--accent-cyan);
+      text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+      .step-box {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+      .step-tag {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow-circle"></div>
+
+  <header>
+    <div class="nav-container">
+      <a href="#" class="logo">
+        <span>🔬 PaperTrail</span>
+        <span class="logo-badge">v0.2.0</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#quickstart">Quickstart</a>
+        <a href="https://github.com/Aryan717317/PaperTrail-Agentic-AI" target="_blank" class="btn-github">
+          <svg height="18" width="18" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-tag">⚡ Evidence-Grounded Research Intelligence Platform</div>
+      <h1>Go Beyond Basic PDF Chat.<br><span class="gradient-text">Verify Every Scientific Claim.</span></h1>
+      <p>
+        PaperTrail transforms collections of academic papers into structured, comparable, and verifiable knowledge. 
+        Extract structured claims, contrast experimental conditions, detect contradictions, and trace every statement to exact page citations.
+      </p>
+      <div class="hero-actions">
+        <a href="https://github.com/Aryan717317/PaperTrail-Agentic-AI" target="_blank" class="btn-primary">View on GitHub</a>
+        <a href="#quickstart" class="btn-secondary">Run Locally</a>
+      </div>
+
+      <div class="badges-bar">
+        <span class="badge-pill">🐍 Python 3.12</span>
+        <span class="badge-pill">⚡ FastAPI</span>
+        <span class="badge-pill">🔄 LangGraph</span>
+        <span class="badge-pill">🧠 OpenRouter</span>
+        <span class="badge-pill">💻 SentenceTransformers</span>
+        <span class="badge-pill">💾 ChromaDB</span>
+        <span class="badge-pill">🖥️ Streamlit</span>
+        <span class="badge-pill">✅ 20 Tests Passed</span>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features">
+      <div class="section-header">
+        <h2>Advanced Research Intelligence</h2>
+        <p>Built specifically for academic researchers analyzing dozens of conflicting studies.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <span class="card-icon">📑</span>
+          <h3>Structured Claim Extraction</h3>
+          <p>Extracts hypotheses, findings, methodologies, metrics, and limitations into typed schemas linked to verbatim quotes and page numbers.</p>
+        </div>
+
+        <div class="feature-card">
+          <span class="card-icon">⚖️</span>
+          <h3>Cross-Paper Comparison</h3>
+          <p>Generates side-by-side matrices contrasting datasets, benchmarks, and architectures—explaining differences in experimental conditions rather than naively ranking numbers.</p>
+        </div>
+
+        <div class="feature-card">
+          <span class="card-icon">⚡</span>
+          <h3>Contradiction Detection</h3>
+          <p>Categorizes cross-paper discrepancies into direct contradictions, partial disagreements, or context-dependent divergence based on experimental baselines.</p>
+        </div>
+
+        <div class="feature-card">
+          <span class="card-icon">🔍</span>
+          <h3>Evidence Quality Check</h3>
+          <p>Evaluates whether a claim is directly supported, indirectly inferred, extrapolated, or unsupported by your literature collection.</p>
+        </div>
+
+        <div class="feature-card">
+          <span class="card-icon">🔒</span>
+          <h3>Offline Embedding Privacy</h3>
+          <p>Embeddings run 100% locally on CPU via Sentence Transformers (<code>all-MiniLM-L6-v2</code>). No proprietary embeddings API charge or data leakage.</p>
+        </div>
+
+        <div class="feature-card">
+          <span class="card-icon">🎯</span>
+          <h3>Page-Level Traceability</h3>
+          <p>Every generated answer is anchored by <code>[S1]</code>, <code>[S2]</code> source labels, verified by citation integrity algorithms.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section id="architecture">
+      <div class="section-header">
+        <h2>System Architecture</h2>
+        <p>Decoupled 7-layer design allowing independent frontend, backend, vectorstore, and LLM upgrades.</p>
+      </div>
+
+      <div class="arch-container">
+        <div class="pipeline-steps">
+          <div class="step-box">
+            <span class="step-badge">LAYER 1</span>
+            <div class="step-content">
+              <h4>Multi-Tab Streamlit Dashboard</h4>
+              <p>Document library management, paper selector checkboxes, and tabs for Q&A, Claims, Comparisons, Contradictions, and Evidence Checks.</p>
+            </div>
+            <span class="step-tag">Frontend (UI)</span>
+          </div>
+
+          <div class="step-box">
+            <span class="step-badge">LAYER 2</span>
+            <div class="step-content">
+              <h4>FastAPI Modular REST API</h4>
+              <p>Streams uploads with 25MB cap, exposes health probes, paper lifecycle, and asynchronous research endpoints.</p>
+            </div>
+            <span class="step-tag">Backend</span>
+          </div>
+
+          <div class="step-box">
+            <span class="step-badge">LAYER 3</span>
+            <div class="step-content">
+              <h4>PyMuPDF Extraction & Boundary-Aware Chunker</h4>
+              <p>Page-by-page extraction, header/footer cleaning heuristics, and paragraph-respecting recursive chunking with SHA-256 chunk IDs.</p>
+            </div>
+            <span class="step-tag">Ingestion</span>
+          </div>
+
+          <div class="step-box">
+            <span class="step-badge">LAYER 4</span>
+            <div class="step-content">
+              <h4>Sentence Transformers (all-MiniLM-L6-v2)</h4>
+              <p>Generates normalized 384-dimensional dense vectors locally on CPU without network calls or API cost.</p>
+            </div>
+            <span class="step-tag">Embeddings</span>
+          </div>
+
+          <div class="step-box">
+            <span class="step-badge">LAYER 5</span>
+            <div class="step-content">
+              <h4>ChromaDB Vector Store</h4>
+              <p>Persistent on-disk storage with chunk-level deduplication, multi-paper scoped filtering, and single-paper deletion.</p>
+            </div>
+            <span class="step-tag">Vector DB</span>
+          </div>
+
+          <div class="step-box">
+            <span class="step-badge">LAYER 6</span>
+            <div class="step-content">
+              <h4>LangGraph Stateful Orchestration</h4>
+              <p>Executes conditional sufficiency routing: abstains safely when evidence is lacking, or drafts answers citing source labels.</p>
+            </div>
+            <span class="step-tag">AI Workflow</span>
+          </div>
+
+          <div class="step-box">
+            <span class="step-badge">LAYER 7</span>
+            <div class="step-content">
+              <h4>OpenRouter Unified LLM Gateway</h4>
+              <p>Configurable model routing (default: <code>openrouter/free</code>) with automatic retries and custom headers.</p>
+            </div>
+            <span class="step-tag">LLM Provider</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quickstart Section -->
+    <section id="quickstart">
+      <div class="section-header">
+        <h2>Get Started in 3 Minutes</h2>
+        <p>Run PaperTrail locally on Windows, macOS, or Linux.</p>
+      </div>
+
+      <div class="code-box">
+<span class="comment"># 1. Clone repository</span>
+git clone https://github.com/Aryan717317/PaperTrail-Agentic-AI.git
+cd PaperTrail-Agentic-AI
+
+<span class="comment"># 2. Create virtual environment & install dependencies</span>
+py -3.12 -m venv .venv
+source .venv/bin/activate  <span class="comment"># Windows: .venv\Scripts\Activate.ps1</span>
+pip install -r requirements.txt
+
+<span class="comment"># 3. Add your free OpenRouter API key in .env</span>
+cp .env.example .env
+
+<span class="comment"># 4. Run automated test suite</span>
+pytest -v
+
+<span class="comment"># 5. Launch FastAPI backend</span>
+uvicorn app.main:app --reload --port 8000
+
+<span class="comment"># 6. Launch Streamlit UI (in a separate terminal)</span>
+streamlit run ui.py
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      PaperTrail — Created by <a href="https://github.com/Aryan717317" target="_blank">Aryan717317</a>. 
+      Open source under MIT License.
+    </p>
+  </footer>
+
+</body>
+</html>
