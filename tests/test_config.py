@@ -6,3 +6,8 @@ def test_openrouter_and_local_embedding_defaults():
     assert settings.openrouter_base_url == "https://openrouter.ai/api/v1"
     assert settings.openrouter_model == "openrouter/free"
     assert settings.embedding_model == "sentence-transformers/all-MiniLM-L6-v2"
+
+
+def test_openrouter_api_key_is_optional_for_local_startup():
+    settings = Settings(openrouter_api_key="")
+    assert settings.openrouter_api_key == ""
