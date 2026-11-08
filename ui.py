@@ -21,10 +21,94 @@ st.set_page_config(
     page_title="PaperTrail — Research Intelligence",
     page_icon="🔬",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
 
-st.title("🔬 PaperTrail")
-st.caption("Evidence-Grounded Research Intelligence & Verification Platform")
+# Custom High-End Styling
+st.markdown("""
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    html, body, [class*="css"] {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* Gradient Brand Header */
+    .brand-header {
+        background: linear-gradient(135deg, #38bdf8 0%, #6366f1 50%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 2.8rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        margin-bottom: 0.2rem;
+    }
+
+    .brand-sub {
+        color: #94a3b8;
+        font-size: 1.1rem;
+        font-weight: 400;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Enhanced Card Containers */
+    .stCard {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(56, 189, 248, 0.15);
+        border-radius: 14px;
+        padding: 1.4rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.4);
+        transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .stCard:hover {
+        border-color: rgba(56, 189, 248, 0.35);
+        transform: translateY(-2px);
+    }
+
+    /* Citation Tag */
+    .citation-tag {
+        background: rgba(56, 189, 248, 0.15);
+        border: 1px solid rgba(56, 189, 248, 0.35);
+        color: #38bdf8;
+        font-family: 'JetBrains Mono', monospace;
+        padding: 0.15rem 0.5rem;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
+
+    /* Tab enhancements */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 0.5rem;
+        background: rgba(15, 23, 42, 0.5);
+        padding: 0.4rem;
+        border-radius: 12px;
+        border: 1px solid rgba(56, 189, 248, 0.1);
+    }
+
+    .stTabs [data-baseweb="tab"] {
+        border-radius: 8px;
+        padding: 0.5rem 1.1rem;
+        font-weight: 600;
+    }
+
+    /* Status Badges */
+    .badge-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown('<div class="brand-header">🔬 PaperTrail</div>', unsafe_allow_html=True)
+st.markdown('<div class="brand-sub">AI-Powered Academic Research Intelligence & Evidence Verification Platform</div>', unsafe_allow_html=True)
 
 
 # ============================================================================
@@ -223,20 +307,21 @@ with st.sidebar:
         type=["pdf"],
         accept_multiple_files=True,
     )
-    if st.button("Index Papers", disabled=not uploads, use_container_width=True):
+    if st.button("📥 Index Selected Papers", disabled=not uploads, use_container_width=True, type="primary"):
         for uploaded in uploads:
             with st.spinner(f"Indexing {uploaded.name}..."):
                 try:
                     data = backend_upload_paper(uploaded.name, uploaded.getvalue())
                     st.success(
-                        f"✅ {data['filename']}: {data['pages_extracted']} pages, "
-                        f"{data['chunks_indexed']} chunks indexed."
+                        f"✅ **{data['filename']}**\n\n"
+                        f"- {data['pages_extracted']} pages extracted\n"
+                        f"- {data['chunks_indexed']} chunks indexed"
                     )
                 except Exception as exc:
                     st.error(f"Error ({uploaded.name}): {exc}")
 
     st.divider()
-    st.subheader("Indexed Papers")
+    st.subheader("Indexed Literature")
     papers = backend_list_papers()
 
     selected_paper_ids = []
@@ -245,23 +330,24 @@ with st.sidebar:
             col1, col2 = st.columns([4, 1])
             with col1:
                 chk = st.checkbox(
-                    f"{p['filename']} ({p['chunk_count']} chunks)",
+                    f"{p['filename']}",
                     value=True,
                     key=f"chk_{p['paper_id']}",
+                    help=f"{p['chunk_count']} embedded chunks",
                 )
                 if chk:
                     selected_paper_ids.append(p["paper_id"])
             with col2:
-                if st.button("🗑️", key=f"del_{p['paper_id']}", help="Delete paper"):
+                if st.button("🗑️", key=f"del_{p['paper_id']}", help="Delete paper from vector store"):
                     try:
                         backend_delete_paper(p["paper_id"])
                         st.rerun()
                     except Exception as e:
                         st.error(str(e))
     else:
-        st.info("No papers indexed yet. Upload PDFs above to begin.")
+        st.info("No papers indexed yet. Upload PDFs above to begin your research session.")
 
-    st.caption(f"Active scope: {len(selected_paper_ids)} paper(s) selected.")
+    st.caption(f"Active scope: **{len(selected_paper_ids)}** of {len(papers)} paper(s) selected.")
 
 
 # ============================================================================
@@ -280,22 +366,26 @@ tab_qa, tab_claims, tab_compare, tab_contradictions, tab_evidence = st.tabs([
 # Tab 1: Q&A
 # ----------------------------------------------------------------------------
 with tab_qa:
-    st.subheader("Ask Your Research Papers")
-    st.caption("Ask complex questions across indexed papers. Every substantive claim is cited with source excerpts.")
+    st.subheader("Interrogate Your Research Papers")
+    st.caption("Ask questions across all indexed papers. Every substantive statement is anchored with traceable page citations.")
 
     question = st.text_area(
-        "Research question",
-        placeholder="What methodology achieves better retrieval accuracy according to these papers, and what are the limitations?",
-        height=100,
+        "Enter your research query",
+        placeholder="e.g. What methodology achieves better retrieval accuracy according to these papers, and what are the limitations?",
+        height=110,
     )
 
-    if st.button("Investigate Question", type="primary", disabled=len(question.strip()) < 3):
-        with st.spinner("Retrieving evidence and formulating answer..."):
+    col_btn, _ = st.columns([2, 5])
+    with col_btn:
+        run_qa = st.button("🔍 Investigate Literature", type="primary", disabled=len(question.strip()) < 3, use_container_width=True)
+
+    if run_qa:
+        with st.spinner("Synthesizing evidence across papers..."):
             try:
                 pids = selected_paper_ids if selected_paper_ids else None
                 result = backend_ask_question(question, pids)
 
-                st.markdown("### Answer")
+                st.markdown("### 📝 Grounded Synthesis")
                 st.write(result["answer"])
 
                 if result.get("limitations"):
@@ -309,46 +399,58 @@ with tab_qa:
                     with st.expander(
                         f"[{source['source_id']}] {source['filename']} — Page {source['page']}"
                     ):
-                        st.write(source["excerpt"])
-                        st.caption(f"Paper ID: {source['paper_id']}")
+                        st.markdown(f"> *{source['excerpt']}*")
+                        st.caption(f"Paper UUID: `{source['paper_id']}`")
             except Exception as exc:
-                st.error(f"Error: {exc}")
+                st.error(f"Error during query: {exc}")
 
 # ----------------------------------------------------------------------------
 # Tab 2: Claim Extraction
 # ----------------------------------------------------------------------------
 with tab_claims:
     st.subheader("Structured Research Claim Extraction")
-    st.caption("Extract verifiable claims (hypotheses, findings, methodologies, metrics, limitations) directly from papers.")
+    st.caption("Extract hypotheses, findings, methodologies, metrics, and limitations into structured scientific claims.")
 
-    topic_focus = st.text_input(
-        "Optional topic focus",
-        placeholder="e.g. retrieval accuracy, hallucination detection, computational efficiency",
-    )
-    target_paper = st.selectbox(
-        "Select paper to extract from",
-        options=["All selected papers"] + [f"{p['filename']} ({p['paper_id']})" for p in papers],
-    )
+    c_topic, c_paper = st.columns([1, 1])
+    with c_topic:
+        topic_focus = st.text_input(
+            "Optional topic focus",
+            placeholder="e.g. retrieval accuracy, hallucination detection, computational efficiency",
+        )
+    with c_paper:
+        target_paper = st.selectbox(
+            "Select paper scope",
+            options=["All selected papers"] + [f"{p['filename']} ({p['paper_id']})" for p in papers],
+        )
 
-    if st.button("Extract Claims", type="primary"):
-        with st.spinner("Analyzing papers and extracting claims..."):
+    if st.button("📑 Extract Structured Claims", type="primary"):
+        with st.spinner("Mining papers for empirical claims..."):
             pid = None
             if target_paper != "All selected papers":
                 pid = target_paper.split("(")[-1].strip(")")
             topic_arg = topic_focus.strip() or None
             try:
                 data = backend_extract_claims(pid, topic_arg)
-                st.markdown(f"**Summary:** {data.get('summary', '')}")
+                st.markdown(f"**Synthesis:** {data.get('summary', '')}")
                 claims = data.get("claims", [])
                 if claims:
                     for c in claims:
                         with st.container():
-                            st.markdown(f"#### 🏷️ [{c['claim_type'].replace('_', ' ').title()}] {c['claim']}")
+                            badge_color = {
+                                "experimental_finding": "green",
+                                "hypothesis": "blue",
+                                "methodological_claim": "violet",
+                                "performance_claim": "rainbow",
+                                "limitation": "orange",
+                                "future_work": "gray",
+                            }.get(c["claim_type"], "blue")
+
+                            st.markdown(f"#### :{badge_color}[{c['claim_type'].replace('_', ' ').title()}] — {c['claim']}")
                             colA, colB, colC = st.columns(3)
-                            colA.write(f"**Methodology:** {c['methodology'] or 'N/A'}")
-                            colB.write(f"**Metric / Result:** {c['metric'] or 'N/A'}")
-                            colC.write(f"**Source:** {c['filename']} (p.{c['page_number']})")
-                            st.info(f"💬 *Evidence Quote:* \"{c['evidence_quote']}\"")
+                            colA.markdown(f"**Methodology:** `{c['methodology'] or 'N/A'}`")
+                            colB.markdown(f"**Metric / Result:** `{c['metric'] or 'N/A'}`")
+                            colC.markdown(f"**Provenance:** `{c['filename']}` *(p.{c['page_number']})*")
+                            st.info(f"💬 *Verbatim Evidence Quote:* \"{c['evidence_quote']}\"")
                             st.divider()
                 else:
                     st.info("No structured claims extracted for this query.")
@@ -360,14 +462,14 @@ with tab_claims:
 # ----------------------------------------------------------------------------
 with tab_compare:
     st.subheader("Cross-Paper Comparative Analysis")
-    st.caption("Compare multiple papers across methodology, benchmark datasets, metrics, and experimental limitations.")
+    st.caption("Compare multiple papers across methodology, benchmark datasets, evaluation metrics, and reported limitations.")
 
     if len(selected_paper_ids) < 2:
-        st.warning("Please select at least 2 papers from the sidebar to enable cross-paper comparison.")
+        st.warning("👉 Please select at least **2 papers** in the sidebar to generate a cross-paper comparison matrix.")
     else:
-        focus = st.text_input("Comparison focus (optional)", placeholder="e.g. retrieval speed vs precision")
-        if st.button("Generate Comparison", type="primary"):
-            with st.spinner("Comparing selected papers..."):
+        focus = st.text_input("Comparison focus (optional)", placeholder="e.g. retrieval speed vs precision trade-offs")
+        if st.button("⚖️ Generate Comparative Matrix", type="primary"):
+            with st.spinner("Contrasting experimental setups and results..."):
                 try:
                     focus_arg = focus.strip() or None
                     comp = backend_compare_papers(selected_paper_ids, focus_arg)
@@ -394,13 +496,13 @@ with tab_compare:
 # ----------------------------------------------------------------------------
 with tab_contradictions:
     st.subheader("Disagreement & Contradiction Detection")
-    st.caption("Identify conflicting findings, differing conclusions, or context-dependent results between papers.")
+    st.caption("Identify conflicting findings, differing conclusions, or context-dependent results across your literature corpus.")
 
     contra_topic = st.text_input(
-        "Topic or finding to evaluate",
+        "Topic or empirical finding to evaluate",
         placeholder="e.g. Does increasing chunk overlap improve retrieval recall?",
     )
-    if st.button("Detect Contradictions", type="primary", disabled=len(contra_topic.strip()) < 3):
+    if st.button("⚡ Detect Contradictions", type="primary", disabled=len(contra_topic.strip()) < 3):
         with st.spinner("Analyzing cross-paper divergence..."):
             try:
                 pids = selected_paper_ids if selected_paper_ids else None
@@ -447,9 +549,9 @@ with tab_evidence:
     test_claim = st.text_area(
         "Claim to verify against literature",
         placeholder="e.g. Chunk size of 500 characters always outperforms 1200 characters on domain-specific benchmarks.",
-        height=80,
+        height=90,
     )
-    if st.button("Evaluate Evidence Quality", type="primary", disabled=len(test_claim.strip()) < 5):
+    if st.button("🔍 Evaluate Evidence Quality", type="primary", disabled=len(test_claim.strip()) < 5):
         with st.spinner("Evaluating evidence directness..."):
             try:
                 pid = selected_paper_ids[0] if len(selected_paper_ids) == 1 else None
@@ -477,5 +579,5 @@ with tab_evidence:
 
 st.divider()
 st.caption(
-    "PaperTrail MVP 0.2.0 | Dual-Mode Engine | All answers trace to indexed source pages."
+    "PaperTrail MVP 0.2.0 | Dual-Mode Engine | Built by Aryan717317"
 )

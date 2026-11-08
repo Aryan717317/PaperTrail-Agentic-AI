@@ -3,28 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PaperTrail — AI-Powered Research Intelligence</title>
+  <title>PaperTrail — AI-Powered Research Intelligence & Evidence Verification</title>
+  <meta name="description" content="Next-generation academic research assistant. Extract structured claims, compare findings, detect contradictions, and verify evidence with page-level citations.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-primary: #0a0e17;
-      --bg-secondary: #111827;
-      --bg-card: #162032;
-      --border-color: #24344d;
-      --text-main: #f1f5f9;
+      --bg-base: #06090e;
+      --bg-surface: #0c121d;
+      --bg-card: rgba(16, 24, 39, 0.75);
+      --bg-card-hover: rgba(22, 34, 55, 0.9);
+      --border-subtle: rgba(56, 189, 248, 0.12);
+      --border-highlight: rgba(56, 189, 248, 0.35);
+      --text-main: #f8fafc;
       --text-muted: #94a3b8;
+      --text-dim: #64748b;
       --accent-cyan: #38bdf8;
       --accent-blue: #3b82f6;
       --accent-indigo: #6366f1;
+      --accent-purple: #a855f7;
       --accent-emerald: #10b981;
       --accent-amber: #f59e0b;
       --accent-rose: #f43f5e;
-      --gradient-brand: linear-gradient(135deg, #38bdf8 0%, #6366f1 50%, #a855f7 100%);
-      --radius-sm: 8px;
-      --radius-md: 14px;
-      --radius-lg: 20px;
+      --gradient-brand: linear-gradient(135deg, #38bdf8 0%, #6366f1 45%, #a855f7 100%);
+      --gradient-glow: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.18) 0%, rgba(99, 102, 241, 0.08) 35%, transparent 70%);
+      --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      --shadow-glow: 0 0 35px -5px rgba(56, 189, 248, 0.25);
     }
 
     * {
@@ -35,40 +40,42 @@
 
     body {
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--bg-primary);
+      background-color: var(--bg-base);
       color: var(--text-main);
       line-height: 1.6;
       overflow-x: hidden;
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(56, 189, 248, 0.15), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 60%, rgba(99, 102, 241, 0.08), transparent);
+      background-attachment: fixed;
     }
 
-    /* Glow backdrop */
-    .glow-circle {
-      position: absolute;
-      width: 600px;
-      height: 600px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, rgba(99, 102, 241, 0.05) 50%, transparent 70%);
-      top: -150px;
-      left: 50%;
-      transform: translateX(-50%);
-      filter: blur(80px);
-      z-index: 0;
+    /* Noise Texture Overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 24px 24px;
       pointer-events: none;
+      z-index: 1;
     }
 
+    /* Navigation */
     header {
       position: sticky;
       top: 0;
-      background: rgba(10, 14, 23, 0.85);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border-color);
+      background: rgba(6, 9, 14, 0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
       z-index: 100;
     }
 
     .nav-container {
-      max-width: 1200px;
+      max-width: 1240px;
       margin: 0 auto;
-      padding: 1rem 1.5rem;
+      padding: 1.1rem 1.75rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -77,26 +84,40 @@
     .logo {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
-      font-size: 1.25rem;
+      gap: 0.75rem;
+      font-size: 1.35rem;
       font-weight: 800;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.03em;
       color: #fff;
       text-decoration: none;
     }
 
-    .logo-badge {
+    .logo-icon {
+      width: 34px;
+      height: 34px;
       background: var(--gradient-brand);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.35);
+      font-size: 1.1rem;
+    }
+
+    .logo-badge {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent-cyan);
       padding: 0.2rem 0.6rem;
-      border-radius: var(--radius-sm);
+      border-radius: 9999px;
       font-size: 0.75rem;
       font-weight: 700;
-      color: #fff;
+      letter-spacing: 0.04em;
     }
 
     .nav-links {
       display: flex;
-      gap: 1.8rem;
+      gap: 2rem;
       align-items: center;
     }
 
@@ -112,327 +133,693 @@
       color: var(--accent-cyan);
     }
 
+    .nav-cta {
+      display: flex;
+      gap: 0.9rem;
+      align-items: center;
+    }
+
     .btn-github {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
+      background: rgba(22, 32, 50, 0.7);
+      border: 1px solid var(--border-subtle);
       color: #fff;
-      padding: 0.5rem 1.1rem;
-      border-radius: var(--radius-sm);
+      padding: 0.55rem 1.15rem;
+      border-radius: 10px;
       text-decoration: none;
       font-size: 0.9rem;
       font-weight: 600;
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      transition: all 0.2s ease;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .btn-github:hover {
-      background: var(--border-color);
+      background: rgba(30, 41, 59, 0.9);
       border-color: var(--accent-cyan);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.2);
       transform: translateY(-1px);
     }
 
+    /* Hero Section */
     .hero {
       position: relative;
-      max-width: 1000px;
-      margin: 4.5rem auto 3rem;
+      max-width: 1080px;
+      margin: 5rem auto 3.5rem;
       padding: 0 1.5rem;
       text-align: center;
-      z-index: 1;
+      z-index: 2;
     }
 
-    .hero-tag {
+    .hero-pill {
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.4rem 1rem;
+      gap: 0.6rem;
+      padding: 0.45rem 1.15rem;
       border-radius: 9999px;
-      background: rgba(56, 189, 248, 0.1);
+      background: rgba(56, 189, 248, 0.08);
       border: 1px solid rgba(56, 189, 248, 0.25);
       color: var(--accent-cyan);
-      font-size: 0.85rem;
+      font-size: 0.86rem;
       font-weight: 600;
-      margin-bottom: 1.5rem;
+      letter-spacing: 0.02em;
+      margin-bottom: 1.75rem;
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.2); }
+      50% { box-shadow: 0 0 20px 2px rgba(56, 189, 248, 0.3); }
+    }
+
+    .hero-pill .dot {
+      width: 7px;
+      height: 7px;
+      background: var(--accent-emerald);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent-emerald);
     }
 
     .hero h1 {
-      font-size: clamp(2.3rem, 5.5vw, 3.8rem);
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
       font-weight: 800;
-      line-height: 1.15;
-      letter-spacing: -0.03em;
-      margin-bottom: 1.25rem;
+      line-height: 1.12;
+      letter-spacing: -0.035em;
+      margin-bottom: 1.5rem;
     }
 
     .gradient-text {
       background: var(--gradient-brand);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      display: inline-block;
     }
 
     .hero p {
-      font-size: 1.2rem;
+      font-size: clamp(1.1rem, 2vw, 1.3rem);
       color: var(--text-muted);
-      max-width: 760px;
-      margin: 0 auto 2.2rem;
+      max-width: 820px;
+      margin: 0 auto 2.5rem;
       font-weight: 400;
+      line-height: 1.65;
     }
 
-    .hero-actions {
+    .hero-buttons {
       display: flex;
-      gap: 1rem;
+      gap: 1.1rem;
       justify-content: center;
       flex-wrap: wrap;
     }
 
-    .btn-primary {
+    .btn-brand-primary {
       background: var(--gradient-brand);
       color: #fff;
-      padding: 0.85rem 1.8rem;
-      border-radius: var(--radius-sm);
+      padding: 0.95rem 2rem;
+      border-radius: 12px;
       text-decoration: none;
       font-weight: 700;
-      font-size: 1rem;
-      box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
-      transition: all 0.2s ease;
+      font-size: 1.05rem;
+      box-shadow: 0 6px 25px rgba(99, 102, 241, 0.35);
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
       border: none;
-      cursor: pointer;
     }
 
-    .btn-primary:hover {
+    .btn-brand-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 26px rgba(56, 189, 248, 0.45);
+      box-shadow: 0 10px 32px rgba(56, 189, 248, 0.45);
     }
 
-    .btn-secondary {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
+    .btn-brand-secondary {
+      background: rgba(18, 27, 44, 0.7);
+      border: 1px solid var(--border-subtle);
       color: var(--text-main);
-      padding: 0.85rem 1.8rem;
-      border-radius: var(--radius-sm);
+      padding: 0.95rem 2rem;
+      border-radius: 12px;
       text-decoration: none;
       font-weight: 600;
-      font-size: 1rem;
-      transition: all 0.2s ease;
+      font-size: 1.05rem;
+      backdrop-filter: blur(12px);
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
     }
 
-    .btn-secondary:hover {
-      background: var(--border-color);
+    .btn-brand-secondary:hover {
+      background: rgba(30, 43, 67, 0.9);
+      border-color: var(--accent-cyan);
+      transform: translateY(-2px);
     }
 
-    /* Badges Bar */
-    .badges-bar {
+    /* Metric Counters Banner */
+    .metrics-ribbon {
+      max-width: 1100px;
+      margin: 4.5rem auto 1rem;
+      padding: 1.5rem 2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      backdrop-filter: blur(16px);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      text-align: center;
+      box-shadow: var(--shadow-card);
+    }
+
+    .metric-item h3 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.2rem;
+    }
+
+    .metric-item h3 span {
+      color: var(--accent-cyan);
+    }
+
+    .metric-item p {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+
+    /* Interactive Live Demo Playground Simulator */
+    .playground-section {
+      max-width: 1180px;
+      margin: 6rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .interactive-window {
+      background: #090e18;
+      border: 1px solid var(--border-highlight);
+      border-radius: 20px;
+      box-shadow: var(--shadow-card), var(--shadow-glow);
+      overflow: hidden;
+    }
+
+    .window-header {
+      background: #0f172a;
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0.9rem 1.4rem;
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.75rem;
-      margin: 3.5rem auto 0;
-      max-width: 900px;
+      align-items: center;
+      justify-content: space-between;
     }
 
-    .badge-pill {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      padding: 0.35rem 0.85rem;
-      border-radius: 9999px;
-      font-size: 0.8rem;
+    .window-dots {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .window-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+
+    .window-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .window-tabs {
+      display: flex;
+      gap: 0.5rem;
+      background: #0b111e;
+      padding: 0.6rem 1.4rem;
+      border-bottom: 1px solid var(--border-subtle);
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.55rem 1.1rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
       font-weight: 600;
-      color: #cbd5e1;
+      cursor: pointer;
+      transition: all 0.2s ease;
       display: flex;
       align-items: center;
       gap: 0.4rem;
     }
 
-    /* Section Styles */
+    .tab-btn.active {
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .window-body {
+      padding: 2.2rem 2rem;
+    }
+
+    .demo-pane {
+      display: none;
+    }
+
+    .demo-pane.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Q&A Demo Styles */
+    .qa-query-box {
+      background: #0f172a;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .qa-query-box input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 500;
+    }
+
+    .qa-answer-card {
+      background: rgba(18, 27, 44, 0.6);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 1.6rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .qa-answer-card h4 {
+      font-size: 0.9rem;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.75rem;
+    }
+
+    .citation-pill {
+      display: inline-block;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: var(--accent-cyan);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 6px;
+      font-weight: 700;
+      margin: 0 0.2rem;
+      cursor: pointer;
+    }
+
+    .citation-pill:hover {
+      background: rgba(56, 189, 248, 0.3);
+    }
+
+    .sources-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .source-excerpt-card {
+      background: #0d1424;
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      font-size: 0.88rem;
+    }
+
+    .source-meta {
+      display: flex;
+      justify-content: space-between;
+      color: var(--accent-indigo);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    /* Comparison Table Demo */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+
+    .compare-table th {
+      background: #0f172a;
+      text-align: left;
+      padding: 1rem 1.2rem;
+      color: var(--text-muted);
+      border-bottom: 2px solid var(--border-subtle);
+    }
+
+    .compare-table td {
+      padding: 1.1rem 1.2rem;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-main);
+    }
+
+    .badge-claim {
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge-finding { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-limitation { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-contradiction { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
+
+    /* Features Section */
     section {
-      max-width: 1200px;
-      margin: 5rem auto;
+      max-width: 1240px;
+      margin: 7rem auto;
       padding: 0 1.5rem;
     }
 
     .section-header {
       text-align: center;
-      max-width: 720px;
-      margin: 0 auto 3rem;
+      max-width: 760px;
+      margin: 0 auto 3.5rem;
+    }
+
+    .section-eyebrow {
+      color: var(--accent-cyan);
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 0.6rem;
     }
 
     .section-header h2 {
-      font-size: 2.2rem;
+      font-size: clamp(2.2rem, 4.5vw, 3rem);
       font-weight: 800;
-      letter-spacing: -0.02em;
-      margin-bottom: 0.75rem;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
     }
 
     .section-header p {
       color: var(--text-muted);
-      font-size: 1.05rem;
+      font-size: 1.15rem;
     }
 
-    /* Features Grid */
     .features-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.6rem;
     }
 
     .feature-card {
       background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 1.8rem;
-      transition: all 0.25s ease;
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 2rem;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
       overflow: hidden;
+      backdrop-filter: blur(14px);
+    }
+
+    .feature-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.1), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
     }
 
     .feature-card:hover {
-      transform: translateY(-4px);
+      transform: translateY(-6px);
       border-color: var(--accent-cyan);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.2);
     }
 
-    .card-icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      display: inline-block;
+    .feature-card:hover::before {
+      opacity: 1;
+    }
+
+    .card-icon-box {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: 1.4rem;
     }
 
     .feature-card h3 {
-      font-size: 1.25rem;
+      font-size: 1.35rem;
       font-weight: 700;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
       color: #fff;
     }
 
     .feature-card p {
       color: var(--text-muted);
-      font-size: 0.95rem;
-      line-height: 1.55;
+      font-size: 0.96rem;
+      line-height: 1.6;
     }
 
     /* Architecture Visualizer */
-    .arch-container {
+    .arch-shell {
       background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: 2.5rem 2rem;
+      border: 1px solid var(--border-subtle);
+      border-radius: 22px;
+      padding: 3rem 2.5rem;
+      backdrop-filter: blur(20px);
     }
 
-    .pipeline-steps {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+    .pipeline-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.8rem;
+      align-items: center;
       position: relative;
     }
 
-    .step-box {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 1.2rem 1.5rem;
-      display: grid;
-      grid-template-columns: 80px 1fr 140px;
-      align-items: center;
-      gap: 1.5rem;
-      transition: border-color 0.2s;
-    }
-
-    .step-box:hover {
-      border-color: var(--accent-blue);
-    }
-
-    .step-badge {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 0.25rem 0.5rem;
-      border-radius: var(--radius-sm);
+    .arch-step-card {
+      background: #0a0f1d;
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 1.4rem 1rem;
       text-align: center;
-      background: rgba(99, 102, 241, 0.2);
-      color: #818cf8;
-      border: 1px solid rgba(99, 102, 241, 0.4);
+      transition: all 0.25s ease;
+      min-height: 160px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
 
-    .step-content h4 {
-      font-size: 1.05rem;
+    .arch-step-card:hover {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+      transform: translateY(-4px);
+    }
+
+    .arch-step-card .step-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent-indigo);
       font-weight: 700;
-      margin-bottom: 0.2rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .arch-step-card .step-icon {
+      font-size: 1.7rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .arch-step-card h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
       color: #fff;
+      line-height: 1.3;
     }
 
-    .step-content p {
+    .arch-step-card p {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      margin-top: 0.3rem;
+    }
+
+    /* Code Terminal */
+    .terminal-container {
+      background: #090e18;
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      overflow: hidden;
+      max-width: 900px;
+      margin: 0 auto;
+      box-shadow: var(--shadow-card);
+    }
+
+    .terminal-nav {
+      background: #0f172a;
+      padding: 0.75rem 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .terminal-tabs {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .term-tab {
+      background: transparent;
+      border: none;
       color: var(--text-muted);
-      font-size: 0.88rem;
-    }
-
-    .step-tag {
       font-size: 0.8rem;
-      color: var(--accent-cyan);
       font-weight: 600;
-      text-align: right;
+      cursor: pointer;
+      padding: 0.2rem 0.5rem;
     }
 
-    /* Code Snippet */
-    .code-box {
-      background: #0d121c;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
+    .term-tab.active {
+      color: var(--accent-cyan);
+      border-bottom: 2px solid var(--accent-cyan);
+    }
+
+    .terminal-body {
       padding: 1.5rem;
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.9rem;
-      color: #e2e8f0;
+      line-height: 1.7;
       overflow-x: auto;
-      margin-top: 1.5rem;
     }
 
-    .code-box .keyword { color: #f43f5e; }
-    .code-box .string { color: #38bdf8; }
-    .code-box .comment { color: #64748b; font-style: italic; }
+    .terminal-body pre {
+      margin: 0;
+    }
 
+    .t-cmd { color: #38bdf8; }
+    .t-flag { color: #f43f5e; }
+    .t-comment { color: #475569; }
+
+    /* Footer */
     footer {
-      border-top: 1px solid var(--border-color);
-      padding: 3rem 1.5rem;
+      border-top: 1px solid var(--border-subtle);
+      padding: 4rem 1.5rem 3rem;
+      background: #04070c;
       text-align: center;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+      font-size: 0.95rem;
+    }
+
+    .footer-links a {
       color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-
-    footer a {
-      color: var(--accent-cyan);
       text-decoration: none;
+      transition: color 0.2s;
     }
 
-    @media (max-width: 768px) {
-      .step-box {
-        grid-template-columns: 1fr;
-        gap: 0.5rem;
+    .footer-links a:hover {
+      color: var(--accent-cyan);
+    }
+
+    .footer-copyright {
+      color: var(--text-dim);
+      font-size: 0.88rem;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
-      .step-tag {
-        text-align: left;
+      .pipeline-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .metrics-ribbon {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+      .pipeline-grid {
+        grid-template-columns: 1fr;
+      }
+      .metrics-ribbon {
+        grid-template-columns: 1fr;
+      }
+      .sources-row {
+        grid-template-columns: 1fr;
+      }
+      .nav-links {
+        display: none;
       }
     }
   </style>
 </head>
 <body>
 
-  <div class="glow-circle"></div>
-
+  <!-- Navigation -->
   <header>
     <div class="nav-container">
       <a href="#" class="logo">
-        <span>🔬 PaperTrail</span>
+        <div class="logo-icon">🔬</div>
+        <span>PaperTrail</span>
         <span class="logo-badge">v0.2.0</span>
       </a>
       <div class="nav-links">
-        <a href="#features">Features</a>
+        <a href="#features">Capabilities</a>
+        <a href="#playground">Interactive Demo</a>
         <a href="#architecture">Architecture</a>
-        <a href="#workflow">Workflow</a>
         <a href="#quickstart">Quickstart</a>
+      </div>
+      <div class="nav-cta">
         <a href="https://github.com/Aryan717317/PaperTrail-Agentic-AI" target="_blank" class="btn-github">
           <svg height="18" width="18" viewBox="0 0 16 16" fill="currentColor">
             <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
           </svg>
-          GitHub
+          Star on GitHub
         </a>
       </div>
     </div>
@@ -441,70 +828,246 @@
   <main>
     <!-- Hero Section -->
     <section class="hero">
-      <div class="hero-tag">⚡ Evidence-Grounded Research Intelligence Platform</div>
-      <h1>Go Beyond Basic PDF Chat.<br><span class="gradient-text">Verify Every Scientific Claim.</span></h1>
-      <p>
-        PaperTrail transforms collections of academic papers into structured, comparable, and verifiable knowledge. 
-        Extract structured claims, contrast experimental conditions, detect contradictions, and trace every statement to exact page citations.
-      </p>
-      <div class="hero-actions">
-        <a href="https://github.com/Aryan717317/PaperTrail-Agentic-AI" target="_blank" class="btn-primary">View on GitHub</a>
-        <a href="#quickstart" class="btn-secondary">Run Locally</a>
+      <div class="hero-pill">
+        <span class="dot"></span>
+        Evidence-Grounded Research Intelligence Platform
       </div>
 
-      <div class="badges-bar">
-        <span class="badge-pill">🐍 Python 3.12</span>
-        <span class="badge-pill">⚡ FastAPI</span>
-        <span class="badge-pill">🔄 LangGraph</span>
-        <span class="badge-pill">🧠 OpenRouter</span>
-        <span class="badge-pill">💻 SentenceTransformers</span>
-        <span class="badge-pill">💾 ChromaDB</span>
-        <span class="badge-pill">🖥️ Streamlit</span>
-        <span class="badge-pill">✅ 20 Tests Passed</span>
+      <h1>
+        Stop Hallucinating.<br>
+        <span class="gradient-text">Verify Every Scientific Claim.</span>
+      </h1>
+
+      <p>
+        PaperTrail transforms piles of academic research PDFs into structured, cross-comparable, and traceable knowledge. 
+        Extract empirical claims, contrast differing experimental setups, detect genuine contradictions, and anchor every answer with exact page citations.
+      </p>
+
+      <div class="hero-buttons">
+        <a href="#playground" class="btn-brand-primary">
+          <span>🚀 Explore Interactive Demo</span>
+        </a>
+        <a href="https://github.com/Aryan717317/PaperTrail-Agentic-AI" target="_blank" class="btn-brand-secondary">
+          <svg height="18" width="18" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          Source Code
+        </a>
+      </div>
+
+      <!-- Metrics Ribbon -->
+      <div class="metrics-ribbon">
+        <div class="metric-item">
+          <h3>100<span>%</span></h3>
+          <p>Local Offline Embeddings</p>
+        </div>
+        <div class="metric-item">
+          <h3>384<span>D</span></h3>
+          <p>Dense Vector Semantic Search</p>
+        </div>
+        <div class="metric-item">
+          <h3>5<span>+</span></h3>
+          <p>Research Analysis Engines</p>
+        </div>
+        <div class="metric-item">
+          <h3>20<span>/20</span></h3>
+          <p>Automated Tests Passing</p>
+        </div>
       </div>
     </section>
 
-    <!-- Features Section -->
+    <!-- Interactive Live Playground Demo Simulator -->
+    <section id="playground" class="playground-section">
+      <div class="section-header">
+        <div class="section-eyebrow">Simulated Workspace</div>
+        <h2>Interactive Research Console</h2>
+        <p>Experience how PaperTrail synthesizes conflicting literature and exposes the ground truth.</p>
+      </div>
+
+      <div class="interactive-window">
+        <div class="window-header">
+          <div class="window-dots">
+            <span class="window-dot dot-red"></span>
+            <span class="window-dot dot-yellow"></span>
+            <span class="window-dot dot-green"></span>
+          </div>
+          <div class="window-title">PaperTrail Workspace — Session active (2 Papers indexed)</div>
+          <span style="font-size:0.75rem; background:rgba(16,185,129,0.2); color:#10b981; padding:0.2rem 0.6rem; border-radius:6px; font-weight:700;">DUAL-MODE ACTIVE</span>
+        </div>
+
+        <div class="window-tabs">
+          <button class="tab-btn active" onclick="switchDemoTab('tab-qa', this)">💬 Evidence-Grounded Q&A</button>
+          <button class="tab-btn" onclick="switchDemoTab('tab-claims', this)">📑 Claim Extraction</button>
+          <button class="tab-btn" onclick="switchDemoTab('tab-compare', this)">⚖️ Cross-Paper Matrix</button>
+          <button class="tab-btn" onclick="switchDemoTab('tab-contra', this)">⚡ Contradiction Radar</button>
+        </div>
+
+        <div class="window-body">
+          <!-- Tab 1: Q&A -->
+          <div id="tab-qa" class="demo-pane active">
+            <div class="qa-query-box">
+              <span style="font-size:1.3rem;">🔍</span>
+              <input type="text" value="Does hybrid retrieval consistently improve recall over dense-only retrieval?" readonly>
+              <span style="font-size:0.8rem; background:rgba(56,189,248,0.2); color:#38bdf8; padding:0.3rem 0.7rem; border-radius:6px; font-weight:600;">Investigated</span>
+            </div>
+
+            <div class="qa-answer-card">
+              <h4>Evidence-Grounded Synthesis</h4>
+              <p style="font-size:1.02rem; line-height:1.7; color:#f1f5f9;">
+                Hybrid retrieval demonstrates significant improvements in recall, achieving up to <strong>92% Recall@10</strong> when exact keyword match is paired with dense representations <span class="citation-pill">[S1]</span>. However, gains are heavily context-dependent: in long-form, domain-specific corpora, uncalibrated sparse weighting introduced query drift and increased retrieval latency by <strong>34%</strong> <span class="citation-pill">[S2]</span>.
+              </p>
+            </div>
+
+            <div class="sources-row">
+              <div class="source-excerpt-card">
+                <div class="source-meta">
+                  <span>[S1] Vaswani_Retrieval_2025.pdf</span>
+                  <span>Page 4</span>
+                </div>
+                <p style="color:#94a3b8; font-style:italic;">
+                  "...Our hybrid pipeline combining BM25 and dense bi-encoders established a new benchmark on MS MARCO, elevating Recall@10 from 78.4% to 92.1% across multi-hop reasoning queries..."
+                </p>
+              </div>
+
+              <div class="source-excerpt-card">
+                <div class="source-meta">
+                  <span>[S2] Chen_ColBERT_Analysis_2026.pdf</span>
+                  <span>Page 9</span>
+                </div>
+                <p style="color:#94a3b8; font-style:italic;">
+                  "...Under specialized medical and legal corpora, dense multi-vector embeddings outperformed hybrid schemes by 8.4 points, as sparse term matching penalized paraphrased terminology..."
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 2: Claims -->
+          <div id="tab-claims" class="demo-pane">
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Claim Statement</th>
+                  <th>Methodology / Metric</th>
+                  <th>Source Provenance</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="badge-claim badge-finding">Finding</span></td>
+                  <td>Hybrid retriever achieves 92.1% Recall@10 on general benchmarks</td>
+                  <td>Reciprocal Rank Fusion (RRF)</td>
+                  <td><code>Vaswani_2025.pdf</code> (p.4)</td>
+                </tr>
+                <tr>
+                  <td><span class="badge-claim badge-limitation">Limitation</span></td>
+                  <td>Evaluation was restricted to English-only benchmarks with short queries</td>
+                  <td>MS MARCO Dev Set</td>
+                  <td><code>Vaswani_2025.pdf</code> (p.8)</td>
+                </tr>
+                <tr>
+                  <td><span class="badge-claim badge-finding">Finding</span></td>
+                  <td>Dense late-interaction reduces semantic drift in specialized domains</td>
+                  <td>ColBERTv2 + HNSW</td>
+                  <td><code>Chen_2026.pdf</code> (p.11)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Tab 3: Compare -->
+          <div id="tab-compare" class="demo-pane">
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Evaluation Axis</th>
+                  <th>Vaswani et al. (Paper A)</th>
+                  <th>Chen & Lin (Paper B)</th>
+                  <th>Comparative Divergence</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Core Approach</strong></td>
+                  <td>Sparse BM25 + Dense Dual-Encoder</td>
+                  <td>Multi-Vector Late Interaction</td>
+                  <td>Paper A optimizes for query latency; Paper B optimizes token granularity.</td>
+                </tr>
+                <tr>
+                  <td><strong>Benchmark Corpus</strong></td>
+                  <td>MS MARCO (General Web Text)</td>
+                  <td>PubMedQA & LegalBench (Domain-Specific)</td>
+                  <td>Divergent conclusions stem directly from vocabulary overlap in the datasets.</td>
+                </tr>
+                <tr>
+                  <td><strong>Reported Limitation</strong></td>
+                  <td>High indexing RAM requirements</td>
+                  <td>Quadratic FLOPs during token cross-scoring</td>
+                  <td>Different computational bottlenecks.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Tab 4: Contradiction -->
+          <div id="tab-contra" class="demo-pane">
+            <div style="background:rgba(244,63,94,0.08); border:1px solid rgba(244,63,94,0.3); border-radius:12px; padding:1.4rem; margin-bottom:1.5rem;">
+              <span class="badge-claim badge-contradiction" style="margin-bottom:0.6rem; display:inline-block;">Context-Dependent Disagreement</span>
+              <h4 style="color:#fff; margin-bottom:0.5rem;">Recall Efficacy in Cross-Domain Retrieval</h4>
+              <p style="color:#cbd5e1; font-size:0.95rem;">
+                Paper A concludes that <em>"BM25 hybrid weighting always improves recall"</em>, whereas Paper B proves that <em>"BM25 degrades recall in specialized terminologies"</em>.
+              </p>
+              <div style="margin-top:0.8rem; font-size:0.86rem; color:#f43f5e; font-weight:600;">
+                Root Divergence: Differing out-of-vocabulary (OOV) rates across benchmark datasets.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Capabilities Grid -->
     <section id="features">
       <div class="section-header">
-        <h2>Advanced Research Intelligence</h2>
-        <p>Built specifically for academic researchers analyzing dozens of conflicting studies.</p>
+        <div class="section-eyebrow">Enterprise Capabilities</div>
+        <h2>Designed for Rigorous Research</h2>
+        <p>Built specifically for researchers, research teams, and ML scientists who cannot tolerate hallucinated papers.</p>
       </div>
 
       <div class="features-grid">
         <div class="feature-card">
-          <span class="card-icon">📑</span>
+          <div class="card-icon-box">📑</div>
           <h3>Structured Claim Extraction</h3>
-          <p>Extracts hypotheses, findings, methodologies, metrics, and limitations into typed schemas linked to verbatim quotes and page numbers.</p>
+          <p>Extracts hypotheses, empirical findings, methodologies, metrics, and limitations into typed schemas linked to verbatim quotes and page numbers.</p>
         </div>
 
         <div class="feature-card">
-          <span class="card-icon">⚖️</span>
-          <h3>Cross-Paper Comparison</h3>
-          <p>Generates side-by-side matrices contrasting datasets, benchmarks, and architectures—explaining differences in experimental conditions rather than naively ranking numbers.</p>
+          <div class="card-icon-box">⚖️</div>
+          <h3>Cross-Paper Comparative Matrix</h3>
+          <p>Contrasts experimental settings, sample sizes, and baselines across papers instead of naively comparing numerical scores out of context.</p>
         </div>
 
         <div class="feature-card">
-          <span class="card-icon">⚡</span>
-          <h3>Contradiction Detection</h3>
-          <p>Categorizes cross-paper discrepancies into direct contradictions, partial disagreements, or context-dependent divergence based on experimental baselines.</p>
+          <div class="card-icon-box">⚡</div>
+          <h3>Contradiction & Disagreement Detection</h3>
+          <p>Classifies divergence into direct contradictions, partial disagreements, or context-dependent variance based on underlying experimental parameters.</p>
         </div>
 
         <div class="feature-card">
-          <span class="card-icon">🔍</span>
+          <div class="card-icon-box">🔍</div>
           <h3>Evidence Quality Check</h3>
-          <p>Evaluates whether a claim is directly supported, indirectly inferred, extrapolated, or unsupported by your literature collection.</p>
+          <p>Evaluates whether an external claim is directly supported, indirectly inferred, extrapolated, or completely unsupported by literature.</p>
         </div>
 
         <div class="feature-card">
-          <span class="card-icon">🔒</span>
-          <h3>Offline Embedding Privacy</h3>
-          <p>Embeddings run 100% locally on CPU via Sentence Transformers (<code>all-MiniLM-L6-v2</code>). No proprietary embeddings API charge or data leakage.</p>
+          <div class="card-icon-box">🔒</div>
+          <h3>100% Offline Local Embeddings</h3>
+          <p>Runs Sentence Transformers (<code>all-MiniLM-L6-v2</code>) locally on CPU. No embedding API fees, no vendor lock-in, and zero private data leakage.</p>
         </div>
 
         <div class="feature-card">
-          <span class="card-icon">🎯</span>
-          <h3>Page-Level Traceability</h3>
+          <div class="card-icon-box">🎯</div>
+          <h3>Exact Page-Level Provenance</h3>
           <p>Every generated answer is anchored by <code>[S1]</code>, <code>[S2]</code> source labels, verified by citation integrity algorithms.</p>
         </div>
       </div>
@@ -513,117 +1076,135 @@
     <!-- Architecture Section -->
     <section id="architecture">
       <div class="section-header">
-        <h2>System Architecture</h2>
-        <p>Decoupled 7-layer design allowing independent frontend, backend, vectorstore, and LLM upgrades.</p>
+        <div class="section-eyebrow">Engineering Rigor</div>
+        <h2>Decoupled 7-Layer Architecture</h2>
+        <p>Every tier is independently testable, swappable, and scalable.</p>
       </div>
 
-      <div class="arch-container">
-        <div class="pipeline-steps">
-          <div class="step-box">
-            <span class="step-badge">LAYER 1</span>
-            <div class="step-content">
-              <h4>Multi-Tab Streamlit Dashboard</h4>
-              <p>Document library management, paper selector checkboxes, and tabs for Q&A, Claims, Comparisons, Contradictions, and Evidence Checks.</p>
-            </div>
-            <span class="step-tag">Frontend (UI)</span>
+      <div class="arch-shell">
+        <div class="pipeline-grid">
+          <div class="arch-step-card">
+            <span class="step-num">LAYER 1</span>
+            <div class="step-icon">🖥️</div>
+            <h4>Streamlit UI</h4>
+            <p>Multi-tab research dashboard</p>
           </div>
 
-          <div class="step-box">
-            <span class="step-badge">LAYER 2</span>
-            <div class="step-content">
-              <h4>FastAPI Modular REST API</h4>
-              <p>Streams uploads with 25MB cap, exposes health probes, paper lifecycle, and asynchronous research endpoints.</p>
-            </div>
-            <span class="step-tag">Backend</span>
+          <div class="arch-step-card">
+            <span class="step-num">LAYER 2</span>
+            <div class="step-icon">⚡</div>
+            <h4>FastAPI REST</h4>
+            <p>Async document lifecycle</p>
           </div>
 
-          <div class="step-box">
-            <span class="step-badge">LAYER 3</span>
-            <div class="step-content">
-              <h4>PyMuPDF Extraction & Boundary-Aware Chunker</h4>
-              <p>Page-by-page extraction, header/footer cleaning heuristics, and paragraph-respecting recursive chunking with SHA-256 chunk IDs.</p>
-            </div>
-            <span class="step-tag">Ingestion</span>
+          <div class="arch-step-card">
+            <span class="step-num">LAYER 3</span>
+            <div class="step-icon">📄</div>
+            <h4>PyMuPDF Ingestion</h4>
+            <p>Cleaned recursive chunks</p>
           </div>
 
-          <div class="step-box">
-            <span class="step-badge">LAYER 4</span>
-            <div class="step-content">
-              <h4>Sentence Transformers (all-MiniLM-L6-v2)</h4>
-              <p>Generates normalized 384-dimensional dense vectors locally on CPU without network calls or API cost.</p>
-            </div>
-            <span class="step-tag">Embeddings</span>
+          <div class="arch-step-card">
+            <span class="step-num">LAYER 4</span>
+            <div class="step-icon">🧠</div>
+            <h4>SentenceTransformers</h4>
+            <p>Local 384-dim CPU vectors</p>
           </div>
 
-          <div class="step-box">
-            <span class="step-badge">LAYER 5</span>
-            <div class="step-content">
-              <h4>ChromaDB Vector Store</h4>
-              <p>Persistent on-disk storage with chunk-level deduplication, multi-paper scoped filtering, and single-paper deletion.</p>
-            </div>
-            <span class="step-tag">Vector DB</span>
+          <div class="arch-step-card">
+            <span class="step-num">LAYER 5</span>
+            <div class="step-icon">💾</div>
+            <h4>ChromaDB</h4>
+            <p>Persistent dedup storage</p>
           </div>
 
-          <div class="step-box">
-            <span class="step-badge">LAYER 6</span>
-            <div class="step-content">
-              <h4>LangGraph Stateful Orchestration</h4>
-              <p>Executes conditional sufficiency routing: abstains safely when evidence is lacking, or drafts answers citing source labels.</p>
-            </div>
-            <span class="step-tag">AI Workflow</span>
+          <div class="arch-step-card">
+            <span class="step-num">LAYER 6</span>
+            <div class="step-icon">🔄</div>
+            <h4>LangGraph Workflow</h4>
+            <p>Sufficiency conditional routing</p>
           </div>
 
-          <div class="step-box">
-            <span class="step-badge">LAYER 7</span>
-            <div class="step-content">
-              <h4>OpenRouter Unified LLM Gateway</h4>
-              <p>Configurable model routing (default: <code>openrouter/free</code>) with automatic retries and custom headers.</p>
-            </div>
-            <span class="step-tag">LLM Provider</span>
+          <div class="arch-step-card">
+            <span class="step-num">LAYER 7</span>
+            <div class="step-icon">🌐</div>
+            <h4>OpenRouter LLM</h4>
+            <p>Multi-model reasoning gateway</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Quickstart Section -->
+    <!-- Quickstart Code Section -->
     <section id="quickstart">
       <div class="section-header">
-        <h2>Get Started in 3 Minutes</h2>
-        <p>Run PaperTrail locally on Windows, macOS, or Linux.</p>
+        <div class="section-eyebrow">Developer Setup</div>
+        <h2>Start Investigating in Minutes</h2>
+        <p>Complete local setup guide with zero complex external dependencies.</p>
       </div>
 
-      <div class="code-box">
-<span class="comment"># 1. Clone repository</span>
-git clone https://github.com/Aryan717317/PaperTrail-Agentic-AI.git
-cd PaperTrail-Agentic-AI
+      <div class="terminal-container">
+        <div class="terminal-nav">
+          <div class="terminal-tabs">
+            <button class="term-tab active">Windows (PowerShell)</button>
+            <button class="term-tab">macOS / Linux</button>
+          </div>
+          <span style="font-size:0.75rem; color:#64748b; font-family:'JetBrains Mono';">python >= 3.11</span>
+        </div>
 
-<span class="comment"># 2. Create virtual environment & install dependencies</span>
-py -3.12 -m venv .venv
-source .venv/bin/activate  <span class="comment"># Windows: .venv\Scripts\Activate.ps1</span>
-pip install -r requirements.txt
+        <div class="terminal-body">
+<pre><span class="t-comment"># 1. Clone repository</span>
+<span class="t-cmd">git clone</span> https://github.com/Aryan717317/PaperTrail-Agentic-AI.git
+<span class="t-cmd">cd</span> PaperTrail-Agentic-AI
 
-<span class="comment"># 3. Add your free OpenRouter API key in .env</span>
-cp .env.example .env
+<span class="t-comment"># 2. Setup virtual environment & dependencies</span>
+<span class="t-cmd">py -3.12 -m venv</span> .venv
+<span class="t-cmd">.venv\Scripts\Activate.ps1</span>
+<span class="t-cmd">pip install -r</span> requirements.txt
 
-<span class="comment"># 4. Run automated test suite</span>
-pytest -v
+<span class="t-comment"># 3. Configure OpenRouter API key in .env</span>
+<span class="t-cmd">cp</span> .env.example .env
 
-<span class="comment"># 5. Launch FastAPI backend</span>
-uvicorn app.main:app --reload --port 8000
+<span class="t-comment"># 4. Verify test suite (20 unit & integration tests)</span>
+<span class="t-cmd">pytest</span> -v
 
-<span class="comment"># 6. Launch Streamlit UI (in a separate terminal)</span>
-streamlit run ui.py
+<span class="t-comment"># 5. Launch the Streamlit workspace (Dual-Mode out-of-the-box!)</span>
+<span class="t-cmd">streamlit run</span> ui.py
+</pre>
+        </div>
       </div>
     </section>
   </main>
 
+  <!-- Footer -->
   <footer>
-    <p>
-      PaperTrail — Created by <a href="https://github.com/Aryan717317" target="_blank">Aryan717317</a>. 
-      Open source under MIT License.
-    </p>
+    <div class="footer-content">
+      <div class="logo">
+        <div class="logo-icon">🔬</div>
+        <span>PaperTrail</span>
+      </div>
+      <p style="max-width:550px; color:#64748b; font-size:0.9rem;">
+        Empowering researchers with transparent, evidence-grounded AI analysis.
+      </p>
+      <div class="footer-links">
+        <a href="https://github.com/Aryan717317/PaperTrail-Agentic-AI" target="_blank">GitHub Repository</a>
+        <a href="#features">Features</a>
+        <a href="#architecture">Architecture</a>
+        <a href="https://openrouter.ai" target="_blank">OpenRouter</a>
+      </div>
+      <div class="footer-copyright">
+        © 2026 PaperTrail by <a href="https://github.com/Aryan717317" target="_blank" style="color:#38bdf8; text-decoration:none;">Aryan717317</a>. Released under MIT License.
+      </div>
+    </div>
   </footer>
 
+  <script>
+    function switchDemoTab(tabId, btn) {
+      document.querySelectorAll('.demo-pane').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      btn.classList.add('active');
+    }
+  </script>
 </body>
 </html>
-
